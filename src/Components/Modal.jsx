@@ -34,10 +34,10 @@ const Modal = ({ isOpen, onClose }) => {
       
         <div className='bg-white text-black rounded-b-3xl p-5 '>
       <div className="flex flex-col  ">
-        <div className='h-72 p-2'>
+        <div className='h-72 p-2 overflow-auto'>
             <span className='text-gray-400  text-sm'><img src="https://image.crisp.chat/avatar/website/b21f93c5-b94e-40ff-8b48-071a822e5da1/120/?1729314687908" className='w-8 rounded-full inline'/> Posbytz</span>
           
-        <div className="p-2 text-white  ms-6 bg-[#EC6800] rounded ">
+        <div className="p-2 text-white  ms-6 bg-[#EC6800] rounded  ">
         
             <p className="">Hello, how can I help you?</p>
            
@@ -45,11 +45,11 @@ const Modal = ({ isOpen, onClose }) => {
           </div>
         </div>
         <hr className='text-slate-600 m-2'/>
-          <textarea
-            className="outline-none border-none"
+          <input
+            className="outline-none border-none mb-2"
             placeholder="Compose your message..."
-          ></textarea>
-        <div className='flex text-gray-500 font-semibold -mt-5 ms-2 '>
+          ></input>
+        <div className='flex text-gray-500 font-semibold  '>
         <i className="bi bi-emoji-smile  text-xl"></i>
         <i className="bi bi-file-plus ms-2  text-xl"></i>
         <i className="bi bi-soundwave ms-2 text-xl"></i>
