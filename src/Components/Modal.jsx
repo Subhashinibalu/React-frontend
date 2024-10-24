@@ -40,8 +40,6 @@ const Modal = ({ isOpen, onClose }) => {
         <div className="p-2 text-white  ms-6 bg-[#EC6800] rounded  ">
         
             <p className="">Hello, how can I help you?</p>
-           
-          
           </div>
         </div>
         <hr className='text-slate-600 m-2'/>

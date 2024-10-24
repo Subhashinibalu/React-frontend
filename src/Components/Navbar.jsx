@@ -34,7 +34,7 @@ const Navbar = ({navbar, transparent }) => {
                     {/* Logo */}
                     <div className=" font-bold">
                         <img
-                            className="ms-36 w-36"
+                            className="ms-12 w-36"
                             src={navbardata.logo}
                             alt="PosBytz"
                         />
