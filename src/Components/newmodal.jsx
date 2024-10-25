@@ -14,7 +14,7 @@ const Modal = ({ isOpen, onClose }) => {
 
     newSocket.on("message", (msg) => {
       console.log("Message from server:", msg);
-      setMessages(prevMessages => [...prevMessages, { text: msg, sender: 'server' }]); 
+      setMessages(prevMessages => [...prevMessages, { text: msg, sender: 'server' }]); // Add received message
     });
 
     return () => {
@@ -58,7 +58,7 @@ const Modal = ({ isOpen, onClose }) => {
                   </div>
                  
                   {messages.map((msg, index) => (
-                    <div key={index} className={`p-2 rounded m-3 ${msg.sender === 'user' ? ' text-black text-end ' : 'bg-[#EC6800] text-white'}`}>
+                    <div key={index} className={`p-2 rounded mb-2 ${msg.sender === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-black'}`}>
                       {msg.text}
                     </div>
                   ))}
