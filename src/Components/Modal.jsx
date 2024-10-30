@@ -1,35 +1,50 @@
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
+import { v4 as uuidv4 } from 'uuid';
 
 const SOCKET_SERVER_URL = 'ws://localhost:3007'; 
 
 const Modal = ({ isOpen, onClose }) => {
   const [socket, setSocket] = useState(null);
   const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState([]); // Store all messages
+  const [messages, setMessages] = useState([]);
+  const [id, setid] = useState(); 
 
   useEffect(() => {
+   
+    if(!id){
+      sessionStorage.setItem("sessionid", uuidv4());
+      setid(sessionStorage.getItem("sessionid"));
+    
+    }    
     const newSocket = io(SOCKET_SERVER_URL);
-    setSocket(newSocket);
+    newSocket.on("join", (msg) => {
+      console.log("Socket:", msg);       
+    });
 
     newSocket.on("message", (msg) => {
       console.log("Message from server:", msg);
-      setMessages(prevMessages => [...prevMessages, { text: msg, sender: 'server' }]); 
+      setMessages(prevMessages => [...prevMessages, { text: msg.message, sender: msg.from,email:msg.email }]); 
     });
-
+    setSocket(newSocket);
     return () => {
       newSocket.disconnect();
     };
   }, []);
-
-  const handlesubmit = (e) => {
-    if (e.key === 'Enter') {
-      console.log("Sending message:", message);
-      socket.emit('message', { message }); 
-      setMessages(prevMessages => [...prevMessages, { text: message, sender: 'user' }]); // Add sent message
-      setMessage(''); 
+ 
+ 
+   
+  const handlesubmit = async(e) => {
+    if (e.key === 'Enter' && message.trim()) {
+        console.log("Sending message:", message);
+        
+        await socket.emit('join', { id, who: "user",to:"admin" }); // Include session ID
+        await socket.emit('message', { message, id, who: "user",to:"admin" }); // Send message to admin
+        setMessages(prevMessages => [...prevMessages, { text: message, sender: 'user' }]);
+        setMessage(''); 
     }
-  };
+};
+
 
   return (
     <div>
@@ -52,14 +67,15 @@ const Modal = ({ isOpen, onClose }) => {
             <div className='bg-white text-black rounded-b-3xl p-5'>
               <div className="flex flex-col">
                 <div className='h-72 p-2 overflow-auto'>
-                <span className='text-gray-400 text-sm'><img src="https://image.crisp.chat/avatar/website/b21f93c5-b94e-40ff-8b48-071a822e5da1/120/?1729314687908" className='w-8 rounded-full inline'/> Posbytz</span>
+                  <span className='text-gray-400 text-sm'><img src="https://image.crisp.chat/avatar/website/b21f93c5-b94e-40ff-8b48-071a822e5da1/120/?1729314687908" className='w-8 rounded-full inline'/> Posbytz</span>
                   <div className="p-2 text-white ms-6 bg-[#EC6800] rounded">
                     <p className="">Hello, how can I help you?</p>
                   </div>
-                 
+
                   {messages.map((msg, index) => (
                     <div key={index} className={`p-2 rounded m-3 ${msg.sender === 'user' ? ' text-black text-end ' : 'bg-[#EC6800] text-white'}`}>
-                      {msg.text}
+                      {msg.email?<><span className='text-sm text-gray-200'>{msg.email}</span><br/> {msg.text}</>:<> {msg.text}</>}
+    
                     </div>
                   ))}
                 </div>
@@ -68,8 +84,8 @@ const Modal = ({ isOpen, onClose }) => {
                   className="outline-none border-none mb-2"
                   placeholder="Compose your message..."
                   value={message}
-                  onChange={(e) => setMessage(e.target.value)} // Update state on change
-                  onKeyDown={handlesubmit} // Call handlesubmit on key down
+                  onChange={(e) => setMessage(e.target.value)}
+                  onKeyDown={handlesubmit}
                 />
                 <div className='flex text-gray-500 font-semibold'>
                   <i className="bi bi-emoji-smile text-xl"></i>
